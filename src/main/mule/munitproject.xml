@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="db23c7fa-d8ca-4991-9eaa-2d58171a531d" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="c24e1c82-836c-4ac5-a9e8-da6d48ec3622" >
+		<salesforce:basic-connection username="khasimshaik@apicentrics.com" password="Admin@12345" securityToken="3BkLic6TS9Gnxh1SdTDtgDEH" />
+	</salesforce:sfdc-config>
+	<flow name="munitprojectFlow" doc:id="05f4d9eb-0c36-4178-8eb4-d5eeb5158cce" >
+		<http:listener doc:name="Listener" doc:id="979e4237-6ac0-485a-af3a-5adf2646f285" config-ref="HTTP_Listener_config" path="/munit"/>
+		<salesforce:query doc:name="Query" doc:id="9846927e-105b-4673-a6e2-e73241e5637f" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query ><![CDATA[SELECT Adress__c,Age__c,cid__c,Fname__c FROM customer__c]]></salesforce:salesforce-query>
+		</salesforce:query>
+		<ee:transform doc:name="Transform Message" doc:id="e81f4491-6f71-43eb-900f-2a1957febf34" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
